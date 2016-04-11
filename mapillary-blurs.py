@@ -68,9 +68,9 @@ def do_unblur_sequence(args):
         else:
             print("[%d/%d] [%s] Removing all blurs from image..." % (im_num, total, im_key), end='', flush=True)
             req_post = session.post(API_ROOT + "im/%s/b" % im_key,
-                    headers={'Authorization':'Bearer %s' % access_token},
+                    headers={'Authorization':'Bearer %s' % access_token, 'Content-Type': 'application/json'},
                     params={"client_id": CLIENT_ID},
-                    json={'bs':[]}
+                    data=json.dumps({'bs':[]})
             )
             assert(req_post.status_code == 200)
             print()
