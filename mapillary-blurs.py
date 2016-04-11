@@ -120,6 +120,7 @@ def do_login(args):
     print("Authenticated.")
 
 parser = argparse.ArgumentParser(description=__doc__)
+parser.set_defaults(func=lambda args: parser.print_help())
 subparsers = parser.add_subparsers(title="subcommands", metavar='command')
 unblur_parser = subparsers.add_parser('unblur-seq',
         help='unblur sequence',
