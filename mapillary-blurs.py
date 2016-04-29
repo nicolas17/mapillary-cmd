@@ -53,19 +53,28 @@ def do_unblur_sequence(args):
     assert(req.status_code == 200)
     obj = req.json()
 
+    skipped = 0
+    pending = 0
+    no_blurs = 0
+    blurs_removed = 0
+
     total = len(obj['keys'])
     for im_num, im_key in enumerate(obj['keys'], 1):
         if im_key in args.skip:
+            skipped += 1
             print("[%d/%d] [%s] Skipping image" % (im_num, total, im_key), file=sys.stderr)
             continue
         req = session.get(API_ROOT + "im/%s/b" % im_key, params={"client_id": CLIENT_ID})
         assert(req.status_code == 200)
         im_json = req.json()
         if im_json['requesting_user'] is not None:
+            pending += 1
             print("[%d/%d] [%s] Image already has pending blur requests, can't submit" % (im_num, total, im_key))
         elif len(im_json['bs']) == 0:
+            no_blurs += 1
             print("[%d/%d] [%s] Image has no blurs, nothing to do" % (im_num, total, im_key))
         else:
+            blurs_removed += 1
             print("[%d/%d] [%s] Removing all blurs from image..." % (im_num, total, im_key), end='', flush=True)
             req_post = session.post(API_ROOT + "im/%s/b" % im_key,
                     headers={'Authorization':'Bearer %s' % access_token, 'Content-Type': 'application/json'},
@@ -74,6 +83,7 @@ def do_unblur_sequence(args):
             )
             assert(req_post.status_code == 200)
             print()
+    print("skipped: %d, already pending: %d, no blurs: %d, blurs removed %d" % (skipped, pending, no_blurs, blurs_removed))
 
 def do_login(args):
     import webbrowser
