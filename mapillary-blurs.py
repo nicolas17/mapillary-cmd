@@ -55,6 +55,7 @@ def do_unblur_sequence(args):
 
     skipped = 0
     pending = 0
+    other_users = 0
     no_blurs = 0
     blurs_removed = 0
 
@@ -70,6 +71,9 @@ def do_unblur_sequence(args):
         if im_json['requesting_user'] is not None:
             pending += 1
             print("[%d/%d] [%s] Image already has pending blur requests, can't submit" % (im_num, total, im_key))
+        elif im_json['user'] is not None:
+            other_users += 1
+            print("[%d/%d] [%s] Image already blurred by human. Skipping" % (im_num, total, im_key))
         elif len(im_json['bs']) == 0:
             no_blurs += 1
             print("[%d/%d] [%s] Image has no blurs, nothing to do" % (im_num, total, im_key))
@@ -83,7 +87,7 @@ def do_unblur_sequence(args):
             )
             assert(req_post.status_code == 200)
             print()
-    print("skipped: %d, already pending: %d, no blurs: %d, blurs removed %d" % (skipped, pending, no_blurs, blurs_removed))
+    print("skipped: %d, already pending: %d, blurred by others: %d, no blurs: %d, blurs removed %d" % (skipped, pending, other_users, no_blurs, blurs_removed))
 
 def do_login(args):
     import webbrowser
