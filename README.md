@@ -26,8 +26,12 @@ It will skip any photos that already have manual blurs.
 
 You can also skip additional photos by passing their IDs to the script using `--skip`:
 
-    python3 mapillary-blurs.py unblur-seq --skip SPswc-uX3Wou8tDpk4lOZA --skip n51tS9TsmitbGtrj15IwwQ E5fc3tf0QM5KpsH8K9jkMw
+    python3 mapillary-blurs.py unblur-seq --skip=SPswc-uX3Wou8tDpk4lOZA --skip=n51tS9TsmitbGtrj15IwwQ E5fc3tf0QM5KpsH8K9jkMw
 
 This will remove blurs from photos in the sequence `E5fc3tf0QM5KpsH8K9jkMw`,
 except photos `SPswc-uX3Wou8tDpk4lOZA`, `n51tS9TsmitbGtrj15IwwQ`,
 and those that already have manual blurs.
+
+Note that you can usually use either `--skip PHOTOID` or `--skip=PHOTOID`,
+but you need to use the latter (with the equals sign) if the ID begins with a dash;
+otherwise the photo ID will be interpreted as an option.
