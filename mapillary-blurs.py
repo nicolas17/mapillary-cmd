@@ -95,7 +95,7 @@ def do_unblur_sequence(args):
                 continue
             print()
     print("skipped: %d, already pending: %d, blurred by others: %d, no blurs: %d, blurs removed %d" % (skipped, pending, other_users, no_blurs, blurs_removed))
-    if len(failures) > 0:
+    if failures:
         print("Unblurring failed on the following images:")
         print(*failures, sep="\n")
 
