@@ -68,7 +68,8 @@ def do_unblur_sequence(args):
             continue
         req = session.get(API_ROOT + "im/%s/b" % im_key, params={"client_id": CLIENT_ID})
         if req.status_code != 200:
-            print("[%d/%d] [%s] Retrieving blurs failed with status %d" % (im_num, total, im_key, req.status_code), file=sys.stderr)
+            print("[%d/%d] [%s] Retrieving blurs failed with status %d"
+                  % (im_num, total, im_key, req.status_code), file=sys.stderr)
             failures.append(im_key)
             continue
         im_json = req.json()
@@ -90,7 +91,8 @@ def do_unblur_sequence(args):
                     data=json.dumps({'bs':[]})
             )
             if req_post.status_code != 200:
-                print("[%d/%d] [%s] Unblurring failed with status %d" % (im_num, total, im_key, req.status_code), file=sys.stderr)
+                print("[%d/%d] [%s] Unblurring failed with status %d"
+                      % (im_num, total, im_key, req.status_code), file=sys.stderr)
                 failures.append(im_key)
                 continue
             print()
