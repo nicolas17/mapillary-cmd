@@ -58,6 +58,7 @@ def do_unblur_sequence(args):
     other_users = 0
     no_blurs = 0
     blurs_removed = 0
+    failures = []
 
     total = len(obj['keys'])
     for im_num, im_key in enumerate(obj['keys'], 1):
@@ -66,7 +67,11 @@ def do_unblur_sequence(args):
             print("[%d/%d] [%s] Skipping image" % (im_num, total, im_key), file=sys.stderr)
             continue
         req = session.get(API_ROOT + "im/%s/b" % im_key, params={"client_id": CLIENT_ID})
-        assert(req.status_code == 200)
+        if req.status_code != 200:
+            print("[%d/%d] [%s] Retrieving blurs failed with status %d"
+                  % (im_num, total, im_key, req.status_code), file=sys.stderr)
+            failures.append(im_key)
+            continue
         im_json = req.json()
         if im_json['requesting_user'] is not None:
             pending += 1
@@ -85,9 +90,15 @@ def do_unblur_sequence(args):
                     params={"client_id": CLIENT_ID},
                     data=json.dumps({'bs':[]})
             )
-            assert(req_post.status_code == 200)
+            if req_post.status_code != 200:
+                print(" Failed with status %d" % req_post.status_code, file=sys.stderr)
+                failures.append(im_key)
+                continue
             print()
     print("skipped: %d, already pending: %d, blurred by others: %d, no blurs: %d, blurs removed %d" % (skipped, pending, other_users, no_blurs, blurs_removed))
+    if failures:
+        print("Unblurring failed on the following images:")
+        print(*failures, sep="\n")
 
 def do_login(args):
     import webbrowser
