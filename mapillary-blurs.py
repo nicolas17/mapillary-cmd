@@ -91,8 +91,7 @@ def do_unblur_sequence(args):
                     data=json.dumps({'bs':[]})
             )
             if req_post.status_code != 200:
-                print("[%d/%d] [%s] Unblurring failed with status %d"
-                      % (im_num, total, im_key, req.status_code), file=sys.stderr)
+                print(" Failed with status %d" % req_post.status_code, file=sys.stderr)
                 failures.append(im_key)
                 continue
             print()
